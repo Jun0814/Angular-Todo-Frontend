@@ -1,0 +1,12 @@
+[
+    {
+        "Status": false,
+        "Thing": "Todo 1",
+        "Editing": false
+    },
+    {
+        "Status": false,
+        "Thing": "Todo 2",
+        "Editing": false
+    }
+]
