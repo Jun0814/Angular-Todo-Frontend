@@ -38,10 +38,17 @@ export class AppComponent implements OnInit{
     this.toDoDataList.forEach(item => {
       item.Status = this.toggleAllBtn;
     });
+
+    this.http.put('/api/todo2_16/Status/' + this.toggleAllBtn, null).subscribe();
   }
 
   clickCheck(item: Todo) {
     item.Status = !item.Status;
+    this.http.put('/api/todo2_16/' + item.TodoId, item).subscribe();
+    this.checkToggleAllBtn();
+  }
+
+  checkToggleAllBtn() {
     if(this.todoCompleted.length === this.toDoDataList.length) {
       this.toggleAllBtn = true;
     } else {
@@ -59,7 +66,8 @@ export class AppComponent implements OnInit{
       const newItem: Todo = {
         Status: false,
         Thing: this.todoInputModel,
-        Editing: false
+        Editing: false,
+        TodoId: ''
       };
       this.http.post<Todo>('/api/todo2_16', newItem).subscribe(data => {
         this.toDoDataList.push(data);
@@ -74,6 +82,7 @@ export class AppComponent implements OnInit{
 
   //Second way to delete
   delete2(item: Todo) {
+    this.http.delete('/api/todo2_16/' + item.TodoId).subscribe();
     this.toDoDataList = this.toDoDataList.filter(data => data !== item);
   }
 
@@ -81,8 +90,8 @@ export class AppComponent implements OnInit{
     item.Editing = true;
   }
 
-  update(item: Todo, value: string) {
-    item.Thing = value;
+  update(item: Todo) {
+    this.http.put('/api/todo2_16/' + item.TodoId, item).subscribe();
     item.Editing = false;
   }
 
@@ -115,7 +124,31 @@ export class AppComponent implements OnInit{
     return this.toDoDataList.filter(data => data.Status);
   }
 
+  //First way to clear completed, but easy to overload the server if there are a lot of data
   clearCompleted() {
+    this.toDoDataList.forEach(item => {
+      if(item.Status) {
+        this.http.delete('/api/todo2_16/' + item.TodoId).subscribe();
+      }
+    });
+    this.toDoDataList = this.todoActive;
+  }
+
+  //Second way to clear completed, but need to cooperate with the backend
+  clearCompleted2() {
+    let idList = '';
+    this.toDoDataList.forEach(data => {
+      if (data.Status) {
+        idList = idList + ',' + data.TodoId;
+      }
+    });
+    this.http.delete('/api/todo2_16/' + idList).subscribe();
+    this.toDoDataList = this.todoActive;
+  }
+
+  //Third way to clear completed using API, still need to cooperate with the backend
+  clearCompleted3() {
+    this.http.delete('/api/todo2_16/clearCompleted').subscribe();
     this.toDoDataList = this.todoActive;
   }
 }

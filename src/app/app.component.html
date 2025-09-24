@@ -19,9 +19,9 @@
                 <input #itemInput
                 *ngIf="item.Editing" 
                 class="edit" 
-                [value]="item.Thing" 
-                (keyup.enter)="update(item, itemInput.value)"
-                (blur)="update(item, itemInput.value)"
+                [(ngModel)]="item.Thing" 
+                (keyup.enter)="update(item)"
+                (blur)="update(item)"
                 (mouseenter)="itemInput.focus()">
             </li>
         </ul>
@@ -47,15 +47,12 @@
          </ul>
          <button class="clear-completed" 
          *ngIf="todoCompleted.length > 0"
-         (click)="clearCompleted()">Clear completed</button>
+         (click)="clearCompleted3()">Clear completed</button>
     </footer>
 </section>
 <div class="date" style="padding-top: 20px">{{date}}</div>
 <div class="date">{{date | date}}</div>
 <div class="date">{{date | date:'dd/MM/yyyy HH:mm:ss'}}</div>
-<br>
-{{note | uppercase}}
-<br>
-{{note | lowercase}}
-<br>
-{{note | titlecase}}
+<div class="note" style="padding-top: 20px">{{note | uppercase}}</div>
+<div class="note">{{note | lowercase}}</div>
+<div class="note">{{note | titlecase}}</div>
